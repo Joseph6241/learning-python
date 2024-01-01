@@ -1,13 +1,71 @@
 import tkinter as tk
+from tkinter import ttk
 import random as rd
 
 root = tk.Tk()  # Creates window and defines default size
-root.geometry("600x400")
+root.geometry("700x700")
 
-size = 6  # sets game board dimensions and randomization
+size = 10  # sets game board dimensions and randomization
 seed = 0
 
-position = 0 * (size * size)  # a list which corresponds to the board
+position = [0] * (size * size)  # a list which corresponds to the board
+
+style_blank = ttk.Style()
+style_blank.configure("blank.TButton", foreground="#f0f0f0", background="#f0f0f0")
+style_blank.layout(
+    "blank.TButton",
+    [
+        ("Button.focus", {
+            'children': [
+                ("Button.padding", {
+                    'children': [
+                        ("Button.label", {'side': 'top', 'sticky': ''})
+                    ],
+                    'sticky': 'nswe'
+                })
+            ],
+            'sticky': 'nswe'
+        })
+    ]
+)
+
+style_correct = ttk.Style()
+style_correct.configure("correct.TButton", foreground="#000000", background="#000000")
+style_correct.layout(
+    "correct.TButton",
+    [
+        ("Button.focus", {
+            'children': [
+                ("Button.padding", {
+                    'children': [
+                        ("Button.label", {'side': 'top', 'sticky': ''})
+                    ],
+                    'sticky': 'nswe'
+                })
+            ],
+            'sticky': 'nswe'
+        })
+    ]
+)
+
+style_incorrect = ttk.Style()
+style_incorrect.configure("incorrect.TButton", foreground="#ff0000", background="#ff0000")
+style_incorrect.layout(
+    "incorrect.TButton",
+    [
+        ("Button.focus", {
+            'children': [
+                ("Button.padding", {
+                    'children': [
+                        ("Button.label", {'side': 'top', 'sticky': ''})
+                    ],
+                    'sticky': 'nswe'
+                })
+            ],
+            'sticky': 'nswe'
+        })
+    ]
+)
 
 
 def game():  # Creates a new game
@@ -42,20 +100,26 @@ def game():  # Creates a new game
             label.config(text=f"{', '.join(str(item) for item in row_sum if item != 0)}")
 
     for i, button in enumerate(buttons):
-        button.config(text=str(position[i]), fg="#ffffff")
+        button.configure(text=str(position[i]), style="blank.TButton")
 
 
-def butt_select(i):  # Changes text color to black for the button that calls it
-    buttons[i].config(fg="#000000")
+def butt_select(i):  # Changes color of the button based on stored value
+    if position[i] == 1:
+        buttons[i].configure(style="correct.TButton")
+    else:
+        buttons[i].configure(style="incorrect.TButton")
 
 
-buttons = [tk.Button(root, command=lambda i=i: butt_select(i)) for i in range(size * size)]
+buttons = [ttk.Button(root, style="blank.TButton", command=lambda i=i: butt_select(i)) for i in range(size * size)]
 # Creates buttons which call the above function
+
+for i, button in enumerate(buttons):  # Sets button size and color
+    button.configure(style="blank.TButton")
 
 for i, button in enumerate(buttons):  # Places the buttons in a grid
     button.grid(row=i // size + 3, column=i % size + 3)
 
-clear = tk.Button(root, text="Clear", command=game)
+clear = ttk.Button(root, text="Clear", command=game)
 clear.grid(row=0, column=0)  # Creates and places the reset button
 
 labels = [tk.Label(root, text=0) for i in range(size * 2)]  # Creates labels
