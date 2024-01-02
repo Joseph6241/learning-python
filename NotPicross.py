@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from tkinter import ttk
 import random as rd
@@ -13,13 +14,18 @@ position = [0] * (size * size)  # a list which corresponds to the board
 labels = []
 mistakes = 0
 
+if sys.platform == "darwin":
+    MAC_OS = True
+else:
+    MAC_OS = False
+
 style_blank = ttk.Style()
 
 style_blank.configure(
-    "blank.TButton", 
-     foreground="#aaaaaa", 
-     background="#aaaaaa"
-     )
+    "blank.TButton",
+    foreground="#aaaaaa",
+    background="#aaaaaa"
+)
 
 style_blank.layout(
     "blank.TButton",
@@ -38,14 +44,13 @@ style_blank.layout(
     ]
 )
 
-
 style_marked = ttk.Style()
 
 style_marked.configure(
-    "marked.TButton", 
-     foreground="#ffaaaa", 
-     background="#ffaaaa"
-     )
+    "marked.TButton",
+    foreground="#ffaaaa",
+    background="#ffaaaa"
+)
 
 style_marked.layout(
     "marked.TButton",
@@ -64,14 +69,13 @@ style_marked.layout(
     ]
 )
 
-
 style_correct = ttk.Style()
 
 style_correct.configure(
-    "correct.TButton", 
-     foreground="#000000", 
-     background="#000000"
-     )
+    "correct.TButton",
+    foreground="#000000",
+    background="#000000"
+)
 
 style_correct.layout(
     "correct.TButton",
@@ -90,14 +94,13 @@ style_correct.layout(
     ]
 )
 
-
 style_incorrect = ttk.Style()
 
 style_incorrect.configure(
-    "incorrect.TButton", 
-     foreground="#ff0000", 
-     background="#ff0000"
-     )
+    "incorrect.TButton",
+    foreground="#ff0000",
+    background="#ff0000"
+)
 
 style_incorrect.layout(
     "incorrect.TButton",
@@ -116,12 +119,14 @@ style_incorrect.layout(
     ]
 )
 
-
 buttons = [ttk.Button(root, style="blank.TButton") for i in range(size * size)]
 
 for i, button in enumerate(buttons):
     button.bind("<Button-1>", lambda event, i=i: left_select(i))
-    button.bind("<Button-3>", lambda event, i=i: right_select(i))
+    if MAC_OS:
+        button.bind("<Button-2>", lambda event, i=i: right_select(i))
+    else:
+        button.bind("<Button-3>", lambda event, i=i: right_select(i))
 
 
 def game():  # Creates a new game
@@ -130,8 +135,7 @@ def game():  # Creates a new game
     rd.seed(seed)
     position = rd.choices(population=(0, 1), k=(size * size))
     mistakes = 0
-    score.config(text = f"Mistakes: {mistakes}")
-
+    score.config(text=f"Mistakes: {mistakes}")
 
     def new_sum(input_list):
         result = []
@@ -149,7 +153,7 @@ def game():  # Creates a new game
 
         return result
 
-    for i, label in enumerate(labels): # Update labels with sums
+    for i, label in enumerate(labels):  # Update labels with sums
 
         if i < size:
             column_sum = new_sum(position[j * size + i] for j in range(size))
@@ -169,7 +173,7 @@ def left_select(i):  # Changes color of the button based on stored value
     else:
         buttons[i].configure(style="incorrect.TButton")
         mistakes += 1
-        score.config(text = f"Mistakes: {mistakes}")
+        score.config(text=f"Mistakes: {mistakes}")
 
 
 def right_select(i):  # Changes color of the button based on stored value
@@ -177,9 +181,8 @@ def right_select(i):  # Changes color of the button based on stored value
     if position[i] == 0:
         buttons[i].configure(style="marked.TButton")
     else:
-        buttons[i].configure(style="incorrect.TButton")
         mistakes += 1
-        score.config(text = f"Mistakes: {mistakes}")
+        score.config(text=f"Mistakes: {mistakes}")
 
 
 for i, button in enumerate(buttons):  # Sets button size and color
@@ -196,7 +199,7 @@ for i, button in enumerate(buttons):  # Places the buttons in a grid
 
 clear = ttk.Button(root, text="New Game", command=game)  # Creates and places new game and score elements
 clear.grid(row=0, column=0)
-score = tk.Label(root, text = f"Mistakes: {mistakes}")
+score = tk.Label(root, text=f"Mistakes: {mistakes}")
 score.grid(row=1, column=0)
 
 for i in range(size * 2):
