@@ -19,105 +19,41 @@ if sys.platform == "darwin":
 else:
     MAC_OS = False
 
-style_blank = ttk.Style()
 
-style_blank.configure(
-    "blank.TButton",
-    foreground="#aaaaaa",
-    background="#aaaaaa"
-)
+class Styles:
+    def __init__(self, color, name):
+        self.color = color
+        self.name = name
+        self.style = ttk.Style()
+        self.style.configure(
+            f"{self.name}.TButton",
+            foreground=self.color,
+            background=self.color
+        )
 
-style_blank.layout(
-    "blank.TButton",
-    [
-        ("Button.focus", {
-            'children': [
-                ("Button.padding", {
+        # Layout configuration
+        self.style.layout(
+            f"{self.name}.TButton",
+            [
+                ("Button.focus", {
                     'children': [
-                        ("Button.label", {'side': 'top', 'sticky': ''})
+                        ("Button.padding", {
+                            'children': [
+                                ("Button.label", {'side': 'top', 'sticky': ''})
+                            ],
+                            'sticky': 'nswe'
+                        })
                     ],
                     'sticky': 'nswe'
                 })
-            ],
-            'sticky': 'nswe'
-        })
-    ]
-)
+            ]
+        )
 
-style_marked = ttk.Style()
 
-style_marked.configure(
-    "marked.TButton",
-    foreground="#ffaaaa",
-    background="#ffaaaa"
-)
-
-style_marked.layout(
-    "marked.TButton",
-    [
-        ("Button.focus", {
-            'children': [
-                ("Button.padding", {
-                    'children': [
-                        ("Button.label", {'side': 'top', 'sticky': ''})
-                    ],
-                    'sticky': 'nswe'
-                })
-            ],
-            'sticky': 'nswe'
-        })
-    ]
-)
-
-style_correct = ttk.Style()
-
-style_correct.configure(
-    "correct.TButton",
-    foreground="#000000",
-    background="#000000"
-)
-
-style_correct.layout(
-    "correct.TButton",
-    [
-        ("Button.focus", {
-            'children': [
-                ("Button.padding", {
-                    'children': [
-                        ("Button.label", {'side': 'top', 'sticky': ''})
-                    ],
-                    'sticky': 'nswe'
-                })
-            ],
-            'sticky': 'nswe'
-        })
-    ]
-)
-
-style_incorrect = ttk.Style()
-
-style_incorrect.configure(
-    "incorrect.TButton",
-    foreground="#ff0000",
-    background="#ff0000"
-)
-
-style_incorrect.layout(
-    "incorrect.TButton",
-    [
-        ("Button.focus", {
-            'children': [
-                ("Button.padding", {
-                    'children': [
-                        ("Button.label", {'side': 'top', 'sticky': ''})
-                    ],
-                    'sticky': 'nswe'
-                })
-            ],
-            'sticky': 'nswe'
-        })
-    ]
-)
+blank = Styles(color="#aaaaaa", name="blank")
+marked = Styles(color="#ffaaaa", name="marked")
+correct = Styles(color="#000000", name="correct")
+incorrect = Styles(color="#ff0000", name="incorrect")
 
 buttons = [ttk.Button(root, style="blank.TButton") for i in range(size * size)]
 
